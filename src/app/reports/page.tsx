@@ -6,13 +6,12 @@ import { db, auth } from '@/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { motion } from 'framer-motion';
 
-interface Transaction {
-  id: string;
-  description: string;
-  amount: number;
-  category: string;
-  type: string;
-  createdAt: any;
+import { Transaction } from '../../types';
+
+interface ChartData {
+  name: string;
+  income: number;
+  expenses: number;
 }
 
 const ReportsPage = () => {
@@ -40,7 +39,7 @@ const ReportsPage = () => {
     }
   }, [user]);
 
-  const monthlyData = transactions.reduce((acc: any, transaction) => {
+  const monthlyData = transactions.reduce((acc: Record<string, ChartData>, transaction) => {
     const date = new Date(transaction.createdAt.seconds * 1000);
     const month = date.toLocaleString('default', { month: 'short' });
     const year = date.getFullYear();
@@ -59,7 +58,7 @@ const ReportsPage = () => {
     return acc;
   }, {});
 
-  const chartData = Object.values(monthlyData).sort((a: any, b: any) => {
+  const chartData: ChartData[] = Object.values(monthlyData).sort((a, b) => {
     const dateA = new Date(a.name);
     const dateB = new Date(b.name);
     return dateA.getTime() - dateB.getTime();

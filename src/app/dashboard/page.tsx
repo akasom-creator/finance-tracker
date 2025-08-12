@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, query, where, orderBy, limit, startAfter } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, orderBy, limit } from 'firebase/firestore';
 import { db, auth } from '@/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { motion } from 'framer-motion';
@@ -146,7 +146,7 @@ const DashboardPage = () => {
                 <li key={budget.id} className="mb-4">
                   <div className="flex justify-between mb-1">
                     <span>{budget.name}</span>
-                    <span>${spent.toFixed(2)} / ${budget.limit.toFixed(2)}</span>
+                    <span>${spent.toFixed(2)} / ${budget.budgeted.toFixed(2)}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-4">
                     <div

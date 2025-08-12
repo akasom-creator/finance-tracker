@@ -63,8 +63,9 @@ const TransactionsPage = () => {
     if (!user || !hasMore || loading) return;
 
     setLoading(true);
+    let q; // Declare q outside the try block
     try {
-      const q = query(
+      q = query(
         collection(db, 'transactions'),
         where('userId', '==', user.uid),
         orderBy('createdAt', 'desc'),
@@ -77,19 +78,15 @@ const TransactionsPage = () => {
         newTransactions.push({ id: doc.id, ...doc.data() } as Transaction);
       });
       setTransactions((prevTransactions) => [...prevTransactions, ...newTransactions]);
-      // BUG FIX: Update pagination state to allow for subsequent "Load More" clicks.
-      setLastVisible(documentSnapshots.docs[documentSnapshots.docs.length - 1]);
-      setHasMore(documentSnapshots.docs.length === transactionsPerPage);
     } catch (error) {
-      // SYNTAX FIX: Use a proper try...catch block for error handling in async functions.
-      // The 'q' variable is not available in this scope, but we can log the error itself.
-      console.error("Error fetching more transactions:", error);
+      console.error("Error fetching transactions:", error, "Query details:", q);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDeleteTransaction = async (id: string) => {
+  const handleDeleteTransaction = async (id: string | undefined) => {
+    if (!id) return;
     try {
       await deleteDoc(doc(db, 'transactions', id));
       // Optimistically update UI
@@ -129,9 +126,8 @@ const TransactionsPage = () => {
                   {transaction.amount.toFixed(2)}
                 </td>
                 <td className="p-2">
-                  {/* TYPE FIX: Ensure transaction.id is not undefined before calling the handler. */}
                   <button
-                    onClick={() => transaction.id && handleDeleteTransaction(transaction.id)}
+                    onClick={() => handleDeleteTransaction(transaction.id)}
                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm"
                   >
                     Delete

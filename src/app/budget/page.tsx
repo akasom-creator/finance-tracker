@@ -5,6 +5,7 @@ import { db, auth } from '@/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import BudgetForm from '@/components/BudgetForm';
 import { motion } from 'framer-motion';
+import { Budget, Transaction } from '../../types';
 
 
 
@@ -117,7 +118,7 @@ const BudgetPage = () => {
                 ></div>
               </div>
               <button
-                onClick={() => handleDeleteBudget(budget.id)}
+                onClick={() => handleDeleteBudget(budget.id!)}
                 className="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               >
                 Delete
