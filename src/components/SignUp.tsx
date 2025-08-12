@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase';
 import { useRouter } from 'next/navigation'; // Import useRouter
+import { FirebaseError } from 'firebase/app';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -14,8 +15,12 @@ const SignUp = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       router.push('/dashboard'); // Redirect to dashboard on successful sign-up
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred.');
+      }
     }
   };
 

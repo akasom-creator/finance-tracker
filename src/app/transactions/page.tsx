@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, limit, getDocs, startAfter, deleteDoc, doc } from 'firebase/firestore'; // Added getDocs, startAfter
+import { collection, query, where, orderBy, limit, getDocs, startAfter, deleteDoc, doc, DocumentSnapshot } from 'firebase/firestore'; // Added getDocs, startAfter, DocumentSnapshot
 import { db, auth } from '@/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import TransactionForm from '@/components/TransactionForm';
@@ -10,7 +10,7 @@ import { Transaction } from '@/types';
 const TransactionsPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [user, setUser] = useState<User | null>(null);
-  const [lastVisible, setLastVisible] = useState<any>(null);
+  const [lastVisible, setLastVisible] = useState<DocumentSnapshot | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const transactionsPerPage = 10; // Number of transactions per page

@@ -13,7 +13,6 @@ interface AuthWrapperProps {
 
 export default function AuthWrapper({ children }: AuthWrapperProps) {
   const [loading, setLoading] = useState(true);
-  const [authUser, setAuthUser] = useState<any>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -22,12 +21,10 @@ export default function AuthWrapper({ children }: AuthWrapperProps) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setAuthUser(user);
         if (pathname === '/login') {
           router.push('/dashboard');
         }
       } else {
-        setAuthUser(null);
         if (protectedRoutes.includes(pathname)) {
           router.push('/login');
         }
@@ -36,7 +33,7 @@ export default function AuthWrapper({ children }: AuthWrapperProps) {
     });
 
     return () => unsubscribe();
-  }, [pathname, router]);
+  }, [pathname, router, protectedRoutes]);
 
   if (loading) {
     return <div>Loading...</div>; // Or a more sophisticated loading spinner
